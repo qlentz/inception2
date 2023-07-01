@@ -1,0 +1,62 @@
+version: '3'
+
+volumes:
+  mariadb:
+    name: mariadb
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/quentin/data/mariadb
+  wordpress:
+    name: wordpress
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/quentin/data/wordpress
+
+networks:
+  inception:
+    name: inception
+    driver: bridge
+
+services:
+  mariadb:
+    container_name: mariadb
+    networks:
+      - inception
+    build: ./requirements/mariadb
+    env_file:
+      - .env
+    volumes:
+      - mariadb:/var/lib/mysql
+    restart: unless-stopped
+    
+  nginx:
+    container_name: nginx
+    networks:
+      - inception
+    build: ./requirements/nginx
+    env_file:
+      - .env
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress:/var/www/wordpress
+    ports:
+      - 443:443
+    restart: unless-stopped
+
+  wordpress:
+    container_name: wordpress
+    networks:
+      - inception
+    build: ./requirements/wordpress
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress:/var/www/wordpress
+    restart: unless-stopped
