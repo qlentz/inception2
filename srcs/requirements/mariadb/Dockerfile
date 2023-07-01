@@ -1,17 +1,17 @@
+# Dockerfile
 FROM debian:buster
 
-# Install MariaDB Server
+# Install MariaDB
 RUN apt-get update && \
     apt-get install -y mariadb-server && \
     rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /var/run/mysqld \
-&& chown -R mysql:mysql /var/run/mysqld \
-&& chmod 777 /var/run/mysqld
+# Copy the database setup script to the Docker image
+COPY script.sh /script.sh
 
-# Add our custom entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Change the permissions of the script to be executable
+RUN chmod +x /script.sh
 
-# Use our custom script as the entrypoint
-ENTRYPOINT ["docker-entrypoint.sh"]
+# Run the command on container startup
+CMD ["/script.sh"]
+

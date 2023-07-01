@@ -4,14 +4,17 @@ all: build up
 
 up:
 	@docker-compose -f ./srcs/docker-compose.yml up
+stop:
+	@docker-compose -f ./srcs/docker-compose.yml stop
 
 build:
 	@docker-compose -f ./srcs/docker-compose.yml build
-	@sudo mkdir -p ${DATA_DIR}/wordpress
-	@sudo mkdir -p ${DATA_DIR}/mariadb
 
 down:
 	@docker-compose -f ./srcs/docker-compose.yml down
+	@docker system prune -af
+	@sudo rm -rf ${DATA_DIR}/mariadb/*
+	@sudo rm -rf ${DATA_DIR}/wordpress/*
 
 re: down clean up
 
