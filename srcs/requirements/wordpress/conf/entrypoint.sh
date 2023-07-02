@@ -9,7 +9,7 @@ if [ ! -d "/run/php" ]; then
 fi
 
 # Wait for MySQL
-until mysql -h "$host" -u "$user" -p"$pass" -e "select 1" > /dev/null 2>&1; do
+until mysql -h "mariadb" -u "$SQL_USER" -p"$SQL_PASSWORD" -e "select 1" > /dev/null 2>&1; do
     echo "Waiting for MySQL..."
     sleep 1
 done
