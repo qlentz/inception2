@@ -1,20 +1,20 @@
 version: '3'
 
 volumes:
-  mariadb:
-    name: mariadb
+  wp:
+    name: wp
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/quentin/data/mariadb
-  wordpress:
-    name: wordpress
+      device: /home/quentin/data/wp
+  db:
+    name: db
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/quentin/data/wordpress
+      device: /home/quentin/data/db
 
 networks:
   inception:
@@ -30,7 +30,7 @@ services:
     env_file:
       - .env
     volumes:
-      - mariadb:/var/lib/mysql
+      - db:/var/lib/mysql
     restart: unless-stopped
 
   nginx:
@@ -43,7 +43,7 @@ services:
     depends_on:
       - wordpress
     volumes:
-      - wordpress:/var/www/wordpress
+      - wp:/var/www/wordpress
     ports:
       - 443:443
     restart: unless-stopped
@@ -58,5 +58,5 @@ services:
     env_file:
       - .env
     volumes:
-      - wordpress:/var/www/wordpress
+      - wp:/var/www/wordpress
     restart: unless-stopped

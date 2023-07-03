@@ -5,7 +5,7 @@ mysql_install_db
 # Start the daemon in background
 /etc/init.d/mysql start
 
-if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ] ; then
+if [ ! -d "/var/lib/mysql/$SQL_DATABASE" ] ; then
 
 # Set root option so that connexion without root password is not possible. Fields:
     # empty password
@@ -19,8 +19,8 @@ if [ ! -d "/var/lib/mysql/$MYSQL_DATABASE" ] ; then
 mysql_secure_installation << _EOF_
 
 Y
-$MYSQL_ROOT_PASSWORD
-$MYSQL_ROOT_PASSWORD
+$SQL_ROOT_PASSWORD
+$SQL_ROOT_PASSWORD
 Y
 n
 Y
@@ -28,19 +28,14 @@ Y
 _EOF_
 
 # Root privileges
-mysql --user=root launch mysql command line client
 mysql --user=root << _EOF_
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$SQL_ROOT_PASSWORD';
 FLUSH PRIVILEGES;
-_EOF_
-
-# Create wordpress database and add user
-mysql --user=root << _EOF_
-CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
-CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
-GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+CREATE DATABASE IF NOT EXISTS $SQL_DATABASE;
+CREATE USER IF NOT EXISTS '$SQL_USER'@'%' IDENTIFIED BY '$SQL_PASSWORD';
+GRANT ALL PRIVILEGES ON $SQL_DATABASE.* TO '$SQL_USER'@'%' IDENTIFIED BY '$SQL_PASSWORD';
 FLUSH PRIVILEGES;
-ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+ALTER USER '$SQL_USER'@'%' IDENTIFIED BY '$SQL_PASSWORD';
 _EOF_
 
 fi
